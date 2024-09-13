@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  #  start Postgres, and ensure that data is stored to a mounted volume
+  postgres:
+    image: 'postgres:17beta1-alpine'
+    ports:
+      - '5432:5432'
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: gudu
+    volumes:
+      - ./db-data/postgres/:/var/lib/postgresql/data/
+
+
+  #  start Redis, and ensure that data is stored to a mounted volume
+  redis:
+    image: 'redis:alpine'
+    ports:
+      - "6379:6379"
+    restart: always
+    volumes:
+      - ./db-data/redis/:/data
+
+  #  start MariaDB, and ensure that data is stored to a mounted volume
+  mariadb:
+    image: 'mariadb:11.4-rc'
+    ports:
+      - '3306:3306'
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: gudu
+      MYSQL_USER: mariadb
+      MYSQL_PASSWORD: password
+    volumes:
+      
+      - ./db-data/init-scripts:/docker-entrypoint-initdb.d
